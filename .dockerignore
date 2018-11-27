@@ -1,0 +1,11 @@
+*
+!pages
+!components
+!server
+!static
+!.babelrc
+!next.config.js
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.server.json
