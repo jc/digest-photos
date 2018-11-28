@@ -48,7 +48,6 @@ export class FlickrImage extends React.Component<FlickrImageProps> {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div className="photo">
         {this.imgSet()}
