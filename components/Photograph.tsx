@@ -1,22 +1,21 @@
 import React from 'react';
-import {Icon} from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react';
 
 export interface PhotographProps {
-    title?: string,
-    description?: string,
-    url: string,
-    link: string
+  title?: string,
+  description?: string,
+  link: string
 }
 
 export interface PermalinkProps {
-    text?: string,
-    url: string
+  text?: string,
+  url: string
 }
 
 export const Permalink: React.SFC<PermalinkProps> = (props) => (
-    <div className="text">
-        <p>{props.text} <a href={props.url}><Icon name='star' /></a></p>
-        <style jsx>{`
+  <div className="text">
+    <p>{props.text} <a href={props.url}><Icon name='star' /></a></p>
+    <style jsx>{`
             p {
                 text-align: center;
                 color: #888;
@@ -27,20 +26,20 @@ export const Permalink: React.SFC<PermalinkProps> = (props) => (
                 text-decoration: none;
             }
         `}
-        </style>
-    </div>
+    </style>
+  </div>
 )
 
 export interface EntryProps {
-    title?: string,
-    description?: string
+  title?: string,
+  description?: string
 }
 
 export const Entry: React.SFC<EntryProps> = (props) => (
-    <div className="text">
-        {props.title && <h3>{props.title}</h3>}
-        {props.description && <p>{props.description}</p>}
-        <style jsx>{`
+  <div className="text">
+    {props.title && <h3>{props.title}</h3>}
+    {props.description && <p>{props.description}</p>}
+    <style jsx>{`
         div {
             margin-top: 0.25em;
         }
@@ -58,34 +57,32 @@ export const Entry: React.SFC<EntryProps> = (props) => (
             white-space: pre-line;
         }        
         `}
-        </style>
-    </div>
+    </style>
+  </div>
 )
 
 export const Photograph: React.SFC<PhotographProps> = (props) => (
-    <div className="image">
-        <div className="photo">
-            <img src={props.url} />
-        </div>
-        <Entry title={props.title} description={props.description} />
-        <Permalink url={props.link} />
-        <style jsx>{`
-            .image {
-                margin-bottom: 2em;
-            }
-        
-            .photo {
-                display: flex;
-                justify-content: center;
-                align-items: baseline;
-                margin-bottom: 1em;
-            }
+  <div className="image">
+    {props.children}
+    <Entry title={props.title} description={props.description} />
+    <Permalink url={props.link} />
+    <style jsx>{`
+        .image {
+          margin-bottom: 2em;
+        }
     
-            img {
-                flex: none;
-                max-height: 1000px;
-            }
-        `}
-        </style>
-    </div>
+        .photo {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+          margin-bottom: 1em;
+        }
+
+        img {
+          flex: none;
+          max-height: 1000px;
+        }
+    `}
+    </style>
+  </div>
 )

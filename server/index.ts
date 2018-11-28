@@ -10,7 +10,7 @@ app.prepare().then(() => {
   const server = express()
 
   server.get('/digest/:id', (req, res) => {
-    digestif.getDigest(req.params.id).then(items => (app.render(req, res, '/digest', {preloaded: items})));
+    digestif.getDigest(req.params.id).then(items => (app.render(req, res, '/digest', { preloaded: items })));
   })
 
   // Fall-back on other next.js assets.

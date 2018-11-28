@@ -1,5 +1,6 @@
 import { Photograph } from '../components/Photograph';
 import { Layout } from '../components/Layout';
+import { FlickrImage } from '../components/FlickrImage';
 import React from 'react';
 import { Stitch, AnonymousCredential } from 'mongodb-stitch-browser-sdk';
 import { withRouter, WithRouterProps } from 'next/router';
@@ -32,11 +33,11 @@ class Digest extends React.PureComponent<DigestProps & WithRouterProps> {
           {this.props.items.map((item: any) => (
             <Photograph
               key={item.item_key}
-              url={`http://farm${item.farm}.staticflickr.com/${item.server}/${item.item_key}_${item.secret}_z.jpg`}
               link={`http://www.flickr.com/photos/${item.service_key}/${item.item_key}`}
               description={item.description}
-              title={item.title}
-            />
+              title={item.title}>
+              <FlickrImage {...item} />
+            </Photograph>
           ))}
         </Layout>
       </div>
