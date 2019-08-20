@@ -26,6 +26,8 @@ interface FlickrApiPhoto {
   datetaken: string,
   tags: string,
   media: string,
+  url_h: string,
+  url_k: string
 }
 
 interface FlickrPhoto {
@@ -38,7 +40,11 @@ interface FlickrPhoto {
   farm: number,
   server: string,
   secret: string,
-  type: string
+  type: string,
+  title: string,
+  description: string,
+  url_h: string,
+  url_k: string
 }
 
 export class DataImport {
@@ -53,6 +59,7 @@ export class DataImport {
   }
 
   async import(since: Date = this.stream.last_checked, collection = this.mongo.db("digestif").collection("items")) {
+    console.log(since);
     const photos = await this.getFlickrPhotos(since);
     if (!this.dryRun) {
       const result = await collection.insertMany(photos);
@@ -75,6 +82,7 @@ export class DataImport {
       extras: "date_upload, date_taken, description, media, tags, url_h, url_k",
       min_upload_date: Math.floor(since.getTime() / 1000)
     }
+    console.log(query);
     const photos: FlickrPhoto[] = [];
     let data: any = {};
     // Flickr API doesn't provide any sorting options for getPhotos. Load all photos into memory before writing
@@ -84,7 +92,7 @@ export class DataImport {
       const pagePhotos = (data.photos.photo as [any])
         .filter(photo => this.keepPhoto(photo))
         .map((photo) => this.transform(photo));
-      photos.concat(pagePhotos);
+      photos.push(...pagePhotos);
       query.page = data.page + 1;
     } while (data.stat === 'ok' && data.pages <= data.page)
     return photos;
@@ -107,7 +115,11 @@ export class DataImport {
       farm: photo.farm,
       server: photo.server,
       secret: photo.secret,
-      type: photo.media
+      type: photo.media,
+      title: photo.title,
+      description: photo.description._content,
+      url_h: photo.url_h,
+      url_k: photo.url_k
     }
   }
 

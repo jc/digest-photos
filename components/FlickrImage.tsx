@@ -33,7 +33,7 @@ export class FlickrImage extends React.Component<FlickrImageProps> {
   imgSet(): JSX.Element {
     const srcset = Object.keys(FlickrImage.sizeWidths).reduce((acc, l) => {
       const imgUrl = this.imgUrlSize(l);
-      if (imgUrl !== undefined) {
+      if (imgUrl != undefined) {
         acc.push(`${imgUrl} ${FlickrImage.sizeWidths[l]}`);
       }
       return acc;
