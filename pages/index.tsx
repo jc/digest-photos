@@ -12,7 +12,7 @@ export default () => (
             (or infrequently) they want photographs.</p>
       </div>
       <div className="photo">
-        <Link as="/digest/Lk" href="/digest?digest=Lk"><a><img src="/static/digestif-mail.jpg" /></a></Link>
+        <Link as="/digest/Lk" href="/digest/[id]"><a><img src="/static/digestif-mail.jpg" /></a></Link>
       </div>
       <style jsx>{`
         p {
