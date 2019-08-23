@@ -15,6 +15,7 @@ class Digest extends React.PureComponent<DigestProps> {
     let mongodb = undefined;
     if (context.req !== undefined) {
       mongodb = await import('mongodb-stitch-server-sdk');
+      context.res.setHeader('Cache-Control', 's-maxage=15552000, stale-while-revalidate, max-age=0')
     } else {
       mongodb = await import('mongodb-stitch-browser-sdk');
     }
