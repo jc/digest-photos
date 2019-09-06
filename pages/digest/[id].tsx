@@ -1,7 +1,7 @@
 import { Photograph } from '../../components/Photograph';
 import { Layout } from '../../components/Layout';
 import { FlickrImage } from '../../components/FlickrImage';
-import React from 'react';
+import { Component } from 'react';
 import { NextPageContext } from 'next';
 import * as os from 'os';
 
@@ -10,7 +10,7 @@ interface DigestProps {
   error?: string
 }
 
-class Digest extends React.PureComponent<DigestProps> {
+class Digest extends Component<DigestProps> {
   static async getInitialProps(context: NextPageContext) {
     let mongodb = undefined;
     if (context.req !== undefined) {

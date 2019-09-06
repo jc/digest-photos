@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { Header } from '../components/Header';
 
-export const Layout: React.SFC<{ title: string }> = ({ children, title }) => (
+export const Layout: React.FunctionComponent<{ title: string }> = ({ children, title }) => (
   <div>
     <Head>
       <title>{title}</title>
