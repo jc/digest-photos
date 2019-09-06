@@ -1,4 +1,4 @@
-import * as Flickr from 'flickr-sdk';
+import Flickr from 'flickr-sdk';
 import * as mongodb from 'mongodb';
 
 interface Stream {
@@ -93,8 +93,8 @@ export class DataImport {
         .filter(photo => this.keepPhoto(photo))
         .map((photo) => this.transform(photo));
       photos.push(...pagePhotos);
-      query.page = data.page + 1;
-    } while (data.stat === 'ok' && data.pages <= data.page)
+      query.page = data.photos.page + 1;
+    } while (data.stat === 'ok' && data.photos.page < data.photos.pages)
     return photos;
   }
 
@@ -144,7 +144,7 @@ export class DataImport {
     const password = process.env.MONGO_PASSWORD;
     const server = process.env.MONGO_SERVER;
     const uri: string = `mongodb+srv://${user}:${password}@${server}/test?retryWrites=true`;
-    const mongo = new mongodb.MongoClient(uri, { useNewUrlParser: true });
+    const mongo = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     return mongo;
   }
 }
