@@ -2,7 +2,9 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "build-cli": "tsc -m commonjs",
+    "cli": "node ./dist/cli/dp.js"
   },
   "dependencies": {
     "@microsoft/ts-command-line": "^4.2.7",
@@ -12,6 +14,7 @@
     "mongodb-stitch-browser-sdk": "^4.5.0",
     "mongodb-stitch-server-sdk": "^4.5.0",
     "next": "^9.0.0",
+    "now": "^16.2.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "semantic-ui-css": "^2.4.1",
