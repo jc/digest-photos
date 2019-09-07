@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 
 export interface FlickrImageProps {
   service_key: string,
@@ -11,7 +11,7 @@ export interface FlickrImageProps {
   url_k?: string
 }
 
-export class FlickrImage extends React.Component<FlickrImageProps> {
+export class FlickrImage extends Component<FlickrImageProps> {
   static sizeWidths: { [key: string]: string } = {
     "z": "640w",
     "c": "800w",

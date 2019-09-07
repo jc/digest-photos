@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export const Header: React.SFC = () => (
+export const Header: React.FunctionComponent = () => (
   <div id="header" className="text">
     <h1>
       <Link as="/" href="/index"><a>Digestif</a></Link>

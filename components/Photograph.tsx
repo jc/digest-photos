@@ -1,4 +1,4 @@
-import React from 'react';
+import { FunctionComponent } from 'react';
 import { Icon } from 'semantic-ui-react';
 
 export interface PhotographProps {
@@ -12,7 +12,7 @@ export interface PermalinkProps {
   url: string
 }
 
-export const Permalink: React.SFC<PermalinkProps> = (props) => (
+export const Permalink: FunctionComponent<PermalinkProps> = (props) => (
   <div className="text">
     <p>{props.text} <a href={props.url}><Icon name='star' /></a></p>
     <style jsx>{`
@@ -35,7 +35,7 @@ export interface EntryProps {
   description?: string
 }
 
-export const Entry: React.SFC<EntryProps> = (props) => (
+export const Entry: FunctionComponent<EntryProps> = (props) => (
   <div className="text">
     {props.title && <h3>{props.title}</h3>}
     {props.description && <p>{props.description}</p>}
@@ -61,7 +61,7 @@ export const Entry: React.SFC<EntryProps> = (props) => (
   </div>
 )
 
-export const Photograph: React.SFC<PhotographProps> = (props) => (
+export const Photograph: FunctionComponent<PhotographProps> = (props) => (
   <div className="image">
     {props.children}
     <Entry title={props.title} description={props.description} />
