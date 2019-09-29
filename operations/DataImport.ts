@@ -59,14 +59,18 @@ export class DataImport {
   }
 
   async import(since: Date = this.stream.last_checked, collection = this.mongo.db("digestif").collection("items")) {
-    console.log(since);
+    const now = new Date();
     const photos = await this.getFlickrPhotos(since);
-    if (!this.dryRun) {
-      const result = await collection.insertMany(photos);
-      return result.insertedCount;
-    } else {
-      return photos.length;
+    if (photos.length != 0) {
+      if (!this.dryRun) {
+        const result = await collection.insertMany(photos);
+        await this.mongo.db("digestif").collection("streams").updateOne({service_key: this.stream.service_key}, {$set: {last_checked: now}});
+        return result.insertedCount;
+      } else {
+        return photos.length;
+      }
     }
+    return photos.length;
   }
 
   async getFlickrPhotos(since: Date) {
@@ -82,7 +86,6 @@ export class DataImport {
       extras: "date_upload, date_taken, description, media, tags, url_h, url_k",
       min_upload_date: Math.floor(since.getTime() / 1000)
     }
-    console.log(query);
     const photos: FlickrPhoto[] = [];
     let data: any = {};
     // Flickr API doesn't provide any sorting options for getPhotos. Load all photos into memory before writing
