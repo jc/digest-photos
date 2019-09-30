@@ -30,6 +30,10 @@ export class FlickrImage extends Component<FlickrImageProps> {
     }
   }
 
+  videoSrc(size = 'hd'): string {
+    return `http://www.flickr.com/photos/${this.props.service_key}/${this.props.item_key}/play/${size}/${this.props.secret}/`;
+  }
+
   imgSet(): JSX.Element {
     const srcset = Object.keys(FlickrImage.sizeWidths).reduce((acc, l) => {
       const imgUrl = this.imgUrlSize(l);
@@ -47,10 +51,33 @@ export class FlickrImage extends Component<FlickrImageProps> {
     );
   }
 
+  video(): JSX.Element {
+    if (this.props.farm == '0') {
+      return (
+        <video width="800" controls>
+          <source type="video/mp4" src={this.videoSrc()}/>
+        </video>
+      );
+    }
+    return (
+      <video width="800" poster={this.imgUrlSize("c")} controls>
+        <source type="video/mp4" src={this.videoSrc()}/>
+      </video>
+    );
+  }
+
+  entry(): JSX.Element {
+    if (this.props.type == 'video') {
+      return this.video();
+    } else {
+      return this.imgSet();
+    }
+  }
+
   render() {
     return (
       <div className="photo">
-        {this.imgSet()}
+        {this.entry()}
         <style jsx>{`
           .photo {
             display: flex;
