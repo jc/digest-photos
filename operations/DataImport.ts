@@ -58,7 +58,7 @@ export class DataImport {
     this.dryRun = dryRun;
   }
 
-  async import(since: Date = this.stream.last_checked, collection = this.mongo.db("digestif").collection("items")) {
+  async import(since: Date = this.stream.last_checked, collection = this.mongo.db("digestif").collection("items")): Promise<number> {
     const now = new Date();
     const photos = await this.getFlickrPhotos(since);
     if (photos.length != 0) {
@@ -142,7 +142,7 @@ export class DataImport {
     return results;
   }
 
-  static createMongoClient() {
+  static createMongoClient(): mongodb.MongoClient {
     const user = process.env.MONGO_USER;
     const password = process.env.MONGO_PASSWORD;
     const server = process.env.MONGO_SERVER;
