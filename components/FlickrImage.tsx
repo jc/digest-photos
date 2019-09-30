@@ -54,7 +54,9 @@ export class FlickrImage extends Component<FlickrImageProps> {
   video(): JSX.Element {
     if (this.props.farm == '0') {
       return (
-        <a href={`https://www.flickr.com/photos/${this.props.service_key}/${this.props.item_key}`}>View video.</a>
+        <video width="800" controls>
+          <source type="video/mp4" src={this.videoSrc()}/>
+        </video>
       );
     }
     return (
