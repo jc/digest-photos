@@ -2,11 +2,12 @@ import { Photograph } from '../../../components/Photograph';
 import { Layout } from '../../../components/Layout';
 import { FlickrImage } from '../../../components/FlickrImage';
 import { NextPageContext } from 'next';
+import Error from 'next/error'
 import { Component } from 'react';
 import fetch from 'isomorphic-unfetch';
 
 interface DigestProps {
-  items: any,
+  items: any[],
   error?: string
 }
 
@@ -31,6 +32,9 @@ class Digest extends Component<DigestProps> {
   }
 
   render() {
+    if (this.props.items.length == 0) {
+      return (<Error statusCode={404} />);
+    }
     return (
       <div>
         <Layout title="Digest">
