@@ -42,7 +42,7 @@ export class DigestEmail {
     );
   }
 
-  static generate(items: FlickrPhotoProps[]) {
+  static generate(items: FlickrPhotoProps[], url: string) {
     return (
       <Mjml>
         <MjmlHead>
@@ -63,7 +63,7 @@ export class DigestEmail {
               <FlickrEmailImage key={item.item_key} {...item} />
             ))}
           </MjmlSection>
-          {items.length > DigestEmail.DISPLAY_IMAGES && <ViewAllCta remainingItems={items.length - DigestEmail.DISPLAY_IMAGES} href="foo" />}
+          {items.length > DigestEmail.DISPLAY_IMAGES && <ViewAllCta remainingItems={items.length - DigestEmail.DISPLAY_IMAGES} href={url} />}
           <MjmlSection text-align="center" direction="ltr" background-color="#FFFFFF" padding="0">
             <MjmlColumn width="100%" vertical-align="top">
               <MjmlText align="center" line-height="25.2px" padding="20px 10px 10px 10px">
