@@ -1,0 +1,7 @@
+{
+  "env": {
+    "MONGO_USER": "@digestif-mongo-user",
+    "MONGO_PASSWORD": "@digestif-mongo-password",
+    "MONGO_SERVER": "@digestif-mongo-server"
+  }
+}
