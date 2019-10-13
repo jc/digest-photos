@@ -1,15 +1,6 @@
+import { StreamProps, FlickrPhotoProps } from '../components/Models';
 import Flickr from 'flickr-sdk';
 import * as mongodb from 'mongodb';
-
-interface Stream {
-  service_key: string,
-  oauth_token: string,
-  oauth_token_secret: string,
-  service: string,
-  last_checked: Date,
-  created: Date,
-  email: string
-}
 
 interface FlickrApiPhoto {
   id: string,
@@ -30,29 +21,12 @@ interface FlickrApiPhoto {
   url_k: string
 }
 
-interface FlickrPhoto {
-  service: string,
-  service_key: string,
-  item_key: string,
-  date_uploaded: Date,
-  date_taken: Date,
-  date_fetched: Date,
-  farm: number,
-  server: string,
-  secret: string,
-  type: string,
-  title: string,
-  description: string,
-  url_h: string,
-  url_k: string
-}
-
 export class DataImport {
-  stream: Stream;
+  stream: StreamProps;
   mongo: mongodb.MongoClient;
   dryRun: boolean;
 
-  constructor(stream: Stream, mongo: mongodb.MongoClient, dryRun: boolean = false) {
+  constructor(stream: StreamProps, mongo: mongodb.MongoClient, dryRun: boolean = false) {
     this.stream = stream;
     this.mongo = mongo;
     this.dryRun = dryRun;
@@ -86,7 +60,7 @@ export class DataImport {
       extras: "date_upload, date_taken, description, media, tags, url_h, url_k",
       min_upload_date: Math.floor(since.getTime() / 1000)
     }
-    const photos: FlickrPhoto[] = [];
+    const photos: FlickrPhotoProps[] = [];
     let data: any = {};
     // Flickr API doesn't provide any sorting options for getPhotos. Load all photos into memory before writing
     // out to mongo
@@ -107,7 +81,7 @@ export class DataImport {
     return visible && !ignoreTag;
   }
 
-  transform(photo: FlickrApiPhoto): FlickrPhoto {
+  transform(photo: FlickrApiPhoto): FlickrPhotoProps {
     return {
       service: "flickr",
       service_key: photo.owner,
@@ -132,7 +106,7 @@ export class DataImport {
     const cursor = streams.find({});
     const results: {} = {};
     while (await cursor.hasNext()) {
-      const stream = await cursor.next() as Stream;
+      const stream = await cursor.next() as StreamProps;
       if (stream.service === "flickr") {
         const data = await new DataImport(stream, mongo, dryRun).import();
         results[stream.service_key] = data;

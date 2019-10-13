@@ -4,9 +4,11 @@ import { FlickrImage } from '../../components/FlickrImage';
 import { Component } from 'react';
 import { NextPageContext } from 'next';
 import * as os from 'os';
+import { FlickrPhotoProps } from 'components/Models';
+import React from "react";
 
 interface DigestProps {
-  items: any,
+  items: FlickrPhotoProps[],
   error?: string
 }
 
@@ -33,7 +35,7 @@ class Digest extends Component<DigestProps> {
     return (
       <div>
         <Layout title="Digest">
-          {this.props.items.map((item: any) => (
+          {this.props.items.map((item) => (
             <Photograph
               key={item.item_key}
               link={`https://www.flickr.com/photos/${item.service_key}/${item.item_key}`}
@@ -44,7 +46,7 @@ class Digest extends Component<DigestProps> {
           ))}
         </Layout>
       </div>
-    )
+    );
   }
 }
 

@@ -10,6 +10,8 @@
     "@microsoft/ts-command-line": "^4.2.7",
     "@zeit/next-css": "^1.0.1",
     "flickr-sdk": "^3.9.0",
+    "mjml": "^4.5.1",
+    "mjml-react": "^1.0.55",
     "mongodb": "^3.3.2",
     "mongodb-stitch-browser-sdk": "^4.5.0",
     "mongodb-stitch-server-sdk": "^4.5.0",
