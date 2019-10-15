@@ -29,16 +29,17 @@ export class RenderAction extends CommandLineAction {
     await mongoClient.connect();
     const db = await mongoClient.db("digestif");
     const itemsCollection = db.collection("items");
-    const start = 1567304140000;
-    const end = 1569809750000;
-    const serviceKey = '35237094740@N01';
+    const digestCollection = db.collection("digests");
+    const digestFilter = {legacy_id: 'Rabn'};
+    const digest = await digestCollection.findOne(digestFilter);
+    const serviceKey = digest.service_key;
     const filter =  { service_key: serviceKey, 
-      date_uploaded: {$gt: new Date(start), $lt: new Date(end)}
+      date_uploaded: {$gt: digest.start_date, $lt: digest.end_date}
     };
     const sort = {date_taken: 1};
     const items = await itemsCollection.find(filter).sort(sort).toArray();
     mongoClient.close();
-    const url = `https://digest.photos/v/${serviceKey}/${IdHelper.encode(start, end)}`
+    const url = `https://digest.photos/v/${serviceKey}/${IdHelper.encode(digest.start_date.getTime(), digest.end_date.getTime())}`
     return {items: items, url: url};
   }
 
