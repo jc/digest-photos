@@ -3,6 +3,7 @@ import { DataImport } from '../operations/DataImport';
 import { DigestEmail } from '../components/email/DigestEmail';
 import {render} from 'mjml-react';
 import { IdHelper } from '../operations/IdHelper';
+import { MailgunDelivery } from '../operations/MailgunDelivery';
 
 export class RenderAction extends CommandLineAction {
   private dryRun: CommandLineFlagParameter;
@@ -24,7 +25,6 @@ export class RenderAction extends CommandLineAction {
   }  
   
   async getItems() {
-    console.log(this.dryRun);
     const mongoClient = DataImport.createMongoClient();
     await mongoClient.connect();
     const db = await mongoClient.db("digestif");
@@ -43,7 +43,13 @@ export class RenderAction extends CommandLineAction {
     return {items: items, url: url};
   }
 
-  protected onExecute(): Promise<void> {
-    return this.getItems().then((result) => console.log(render(DigestEmail.generate(result.items, result.url), {validationLevel: 'soft'})));
+  protected async onExecute(): Promise<void> {
+    const result = await this.getItems();
+    const output = render(DigestEmail.generate(result.items, result.url), {validationLevel: 'soft'});
+    if (this.dryRun.value) {
+      console.log(output.html);
+    } else {
+      MailgunDelivery.send(output.html);
+    }
   }
 }
