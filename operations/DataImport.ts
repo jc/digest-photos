@@ -35,16 +35,27 @@ export class DataImport {
   async import(since: Date = this.stream.last_checked, collection = this.mongo.db("digestif").collection("items")): Promise<number> {
     const now = new Date();
     const photos = await this.getFlickrPhotos(since);
-    if (photos.length != 0) {
-      if (!this.dryRun) {
+    if (this.dryRun) {
+      return photos.length;
+    } else {
+      if (photos.length > 0) {
         const result = await collection.insertMany(photos);
-        await this.mongo.db("digestif").collection("streams").updateOne({service_key: this.stream.service_key}, {$set: {last_checked: now}});
-        return result.insertedCount;
+        await this.mongo.db("digestif")
+          .collection("streams")
+          .updateOne(
+            {service_key: this.stream.service_key}, 
+            {$set: {last_checked: now,
+                    last_updated: now}});
+        return result.insertedCount;        
       } else {
-        return photos.length;
+        await this.mongo.db("digestif")
+          .collection("streams")
+          .updateOne(
+            {service_key: this.stream.service_key}, 
+            {$set: {last_checked: now}});        
       }
+        return photos.length;
     }
-    return photos.length;
   }
 
   async getFlickrPhotos(since: Date) {

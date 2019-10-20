@@ -24,7 +24,7 @@ async function retrieveItems(request: NextApiRequest, response: NextApiResponse)
   const startDate = new Date(Number(startMs));
   const endDate = new Date(Number(endMs));
   const filter =  { service_key: serviceKey, 
-    date_uploaded: {$gt: startDate, $lt: endDate}
+    date_fetched: {$gt: startDate, $lt: endDate}
    };
    const sort = {date_taken: 1};
    const items = await itemsCollection.find(filter).sort(sort).toArray();

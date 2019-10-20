@@ -1,9 +1,12 @@
 import {CommandLineAction, CommandLineFlagParameter} from '@microsoft/ts-command-line';
 import { DataImport } from '../operations/DataImport';
-import { DigestEmail } from '../components/email/DigestEmail';
+import { Email } from '../components/email/DigestEmail';
 import {render} from 'mjml-react';
 import { IdHelper } from '../operations/IdHelper';
 import { MailgunDelivery } from '../operations/MailgunDelivery';
+import React from "react";
+import { DigestManager } from '../operations/DigestManager';
+import { DigestProps } from '../components/Models';
 
 export class RenderAction extends CommandLineAction {
   private dryRun: CommandLineFlagParameter;
@@ -24,32 +27,41 @@ export class RenderAction extends CommandLineAction {
       });
   }  
   
-  async getItems() {
-    const mongoClient = DataImport.createMongoClient();
-    await mongoClient.connect();
-    const db = await mongoClient.db("digestif");
+  async getItems(digest: DigestProps, db) {
     const itemsCollection = db.collection("items");
-    const digestCollection = db.collection("digests");
-    const digestFilter = {legacy_id: 'Rabn'};
-    const digest = await digestCollection.findOne(digestFilter);
-    const serviceKey = digest.service_key;
-    const filter =  { service_key: serviceKey, 
-      date_uploaded: {$gt: digest.start_date, $lt: digest.end_date}
+    const filter =  { service_key: digest.service_key,
+      date_fetched: {$gt: digest.start_date, $lt: digest.end_date}
     };
     const sort = {date_taken: 1};
     const items = await itemsCollection.find(filter).sort(sort).toArray();
-    mongoClient.close();
-    const url = `https://digest.photos/v/${serviceKey}/${IdHelper.encode(digest.start_date.getTime(), digest.end_date.getTime())}`
-    return {items: items, url: url};
+    const url = `https://digest.photos/v/${digest.service_key}/${IdHelper.encode(digest.start_date.getTime(), digest.end_date.getTime())}`
+    return {items: items, url: url};    
   }
 
   protected async onExecute(): Promise<void> {
-    const result = await this.getItems();
-    const output = render(DigestEmail.generate(result.items, result.url), {validationLevel: 'soft'});
-    if (this.dryRun.value) {
-      console.log(output.html);
-    } else {
-      MailgunDelivery.send(output.html);
+    const mongoClient = DataImport.createMongoClient();
+    await mongoClient.connect();
+    const db = await mongoClient.db("digestif");
+    const stream = await db.collection('streams').findOne({service_key: '35237094740@N01'});
+    const manager = new  DigestManager(stream, db, true);
+    const digests = await manager.createDigests(new Date());
+    const sends = digests.map(async (digest) => {
+      const result = await this.getItems(digest, db);
+      const email = React.createElement(Email, {items: result.items, url: result.url, stream: stream, subscription: null});
+      const output = render(email, {validationLevel: 'soft'});
+      if (this.dryRun.value) {
+        console.log(`[DRY-RUN]: Send ${digest.email} ${result.url} ${digest.end_date}`);
+      } else {
+        MailgunDelivery.send(output.html);
+        manager.completeDigest(digest);
+      }
+    });
+    await Promise.all(sends);
+    let insertedCount = digests.length;
+    if (!this.dryRun.value) {
+      insertedCount = await manager.recordDigests(digests);
     }
+    console.log(`${stream.service_key} generated ${digests.length} digests, recorded ${insertedCount}`);
+    mongoClient.close();
   }
 }

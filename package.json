@@ -3,7 +3,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "build-cli": "tsc -m commonjs",
+    "build-cli": "tsc --jsx react -m commonjs",
     "cli": "node ./dist/cli/dp.js"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "hashids": "^2.0.1",
     "isomorphic-unfetch": "^3.0.0",
     "mailgun.js": "^2.0.1",
+    "memorize-decorator": "^0.2.2",
     "mjml": "^4.5.1",
     "mjml-react": "^1.0.55",
     "mongodb": "^3.3.2",
