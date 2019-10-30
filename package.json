@@ -7,9 +7,10 @@
     "cli": "node ./dist/cli/dp.js"
   },
   "dependencies": {
-    "@microsoft/ts-command-line": "^4.2.7",
+    "@microsoft/ts-command-line": "^4.3.4",
     "@zeit/next-css": "^1.0.1",
     "flickr-sdk": "^3.9.0",
+    "formik": "^1.5.8",
     "hashids": "^2.0.1",
     "isomorphic-unfetch": "^3.0.0",
     "mailgun.js": "^2.0.1",
@@ -24,7 +25,8 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.87.3"
+    "semantic-ui-react": "^0.88.1",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@types/node": "^12.7.2",
