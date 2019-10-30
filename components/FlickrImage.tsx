@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { FlickrPhotoProps } from './Models';
 import React from "react";
 
-export class FlickrImage extends Component<FlickrPhotoProps> {
+export class FlickrImage<P extends FlickrPhotoProps> extends Component<P> {
   static sizeWidths: { [key: string]: string } = {
     "z": "640w",
     "c": "800w",
