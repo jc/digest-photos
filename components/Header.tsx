@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import React from "react";
 
 export const Header: React.FunctionComponent = () => (
   <div id="header" className="text">
@@ -34,4 +35,4 @@ export const Header: React.FunctionComponent = () => (
     `}
     </style>
   </div>
-)
+);

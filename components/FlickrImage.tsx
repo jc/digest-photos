@@ -1,17 +1,8 @@
 import { Component } from 'react';
+import { FlickrPhotoProps } from './Models';
+import React from "react";
 
-export interface FlickrImageProps {
-  service_key: string,
-  item_key: string,
-  farm: string,
-  server: string,
-  secret: string,
-  type: string,
-  url_h?: string,
-  url_k?: string
-}
-
-export class FlickrImage extends Component<FlickrImageProps> {
+export class FlickrImage<P extends FlickrPhotoProps> extends Component<P> {
   static sizeWidths: { [key: string]: string } = {
     "z": "640w",
     "c": "800w",
@@ -52,7 +43,7 @@ export class FlickrImage extends Component<FlickrImageProps> {
   }
 
   video(): JSX.Element {
-    if (this.props.farm == '0') {
+    if (this.props.farm == 0) {
       return (
         <video width="800" controls>
           <source type="video/mp4" src={this.videoSrc()}/>

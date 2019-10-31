@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { Header } from '../components/Header';
+import React from "react";
 
 export const Layout: React.FunctionComponent<{ title: string }> = ({ children, title }) => (
   <div>
@@ -49,6 +50,7 @@ export const Layout: React.FunctionComponent<{ title: string }> = ({ children, t
       a { color: #2ba6cb; }
       a:link { color: #2ba6cb; }
       a:visited { color: #cb2ba6; }
+      
     `}</style>
   </div>
-)
+);

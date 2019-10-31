@@ -5,6 +5,7 @@ import { NextPageContext } from 'next';
 import Error from 'next/error'
 import { Component } from 'react';
 import fetch from 'isomorphic-unfetch';
+import React from "react";
 
 interface DigestProps {
   items: any[],

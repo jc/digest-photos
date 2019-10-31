@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import { Icon } from 'semantic-ui-react';
+import React from "react";
 
 export interface PhotographProps {
   title?: string,
@@ -28,7 +29,7 @@ export const Permalink: FunctionComponent<PermalinkProps> = (props) => (
         `}
     </style>
   </div>
-)
+);
 
 export interface EntryProps {
   title?: string,
@@ -59,7 +60,7 @@ export const Entry: FunctionComponent<EntryProps> = (props) => (
         `}
     </style>
   </div>
-)
+);
 
 export const Photograph: FunctionComponent<PhotographProps> = (props) => (
   <div className="image">
@@ -85,4 +86,4 @@ export const Photograph: FunctionComponent<PhotographProps> = (props) => (
     `}
     </style>
   </div>
-)
+);
