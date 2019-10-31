@@ -22,13 +22,14 @@ export class DigestManager {
     const results: DigestProps[] = [];
     while (await cursor.hasNext()) {
       const subscription = await cursor.next() as SubscriptionProps;
-      if (this.readyForDigest(subscription.frequency, processDate, subscription.last_digest)) {
-        console.log(`${subscription.email} ready for digest`);
-        const contentAvailable = await this.hasContent(processDate, subscription.last_digest);
+      const lastDigest = subscription.last_digest;
+      const modifiedLastDigest = lastDigest === undefined ? undefined : new Date(lastDigest.getTime() + 25 * 60 * 1000);
+      if (this.readyForDigest(subscription.frequency, processDate, modifiedLastDigest)) {
+        const contentAvailable = await this.hasContent(processDate, modifiedLastDigest);
         if (contentAvailable) {
           const digest: DigestProps = { service_key: subscription.service_key,
                                         email: subscription.email,
-                                        start_date: subscription.last_digest,
+                                        start_date: modifiedLastDigest,
                                         end_date: processDate
                                       };
           results.push(digest);
@@ -43,10 +44,13 @@ export class DigestManager {
     const result = await subscriptionsCollection.updateOne(
       {service_key:digest.service_key, email:digest.email},
       {$set: {last_digest: digest.end_date}});
-    return result.upsertedCount == 1;
+    return result.modifiedCount == 1;
   }
 
   async recordDigests(digests: DigestProps[]): Promise<number> {
+    if (digests.length == 0) {
+      return 0;
+    }
     const digestsCollection = this.db.collection('digests');
     const result = await digestsCollection.insertMany(digests);
     return result.insertedCount;
@@ -56,10 +60,13 @@ export class DigestManager {
     if (frequency == 0) {
       return false;
     }
+    if (lastDate === undefined) {
+      return true;
+    }
     const delta = processDate.getTime() - lastDate.getTime();
     return delta / DigestManager.DAY_IN_MS >= frequency;
   }
-  
+
   @memorize({ttl: Infinity})
   async hasContent(processDate: Date, lastDate: Date): Promise<boolean> {
     const filter =  {service_key: this.stream.service_key,  date_uploaded: {$gt: lastDate, $lt: processDate}};

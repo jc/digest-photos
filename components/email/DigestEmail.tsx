@@ -40,8 +40,7 @@ export const Unsubscribe: React.FunctionComponent<UnsubscribeProps> = (props) =>
     <MjmlText font-size="14px" align="center" line-height="25.2px" container-background-color="#ECF8FF" padding="10px">
       <p>We are currently sending you digests {convertDaysToWords(props.subscription.frequency)} when there are new photographs. 
       Want to change the delivery rate? 
-      Adjust your <a href={`https://digest.photos/unsubscribe/${props.stream.service_key}?email=${props.subscription.email}`}>subscription</a> 
-      or <a href={`https://digest.photos/unsubscribe/${props.stream.service_key}?email=${props.subscription.email}&frequency=0`}>unsubscribe</a>.</p>
+      Adjust your <a href={`https://digest.photos/subscribe/${props.stream.service_key}?email=${props.subscription.email}`}>subscription</a> or <a href={`https://digest.photos/subscribe/${props.stream.service_key}?email=${props.subscription.email}&frequency=0`}>unsubscribe</a>.</p>
     </MjmlText>
   </MjmlColumn>
 </MjmlSection>  
@@ -66,7 +65,7 @@ export const Layout: React.FunctionComponent<{}> = ({children}) => (
       <MjmlSection text-align="center" direction="ltr" background-color="#FFFFFF" padding="0">
         <MjmlColumn width="100%" vertical-align="top">
           <MjmlText align="center" line-height="25.2px" padding="20px 10px 10px 10px">
-            <p>Powered by <a href="http://digest.photos">Digiestif</a></p>
+            <p>Powered by <a href="http://digest.photos">Digestif</a></p>
           </MjmlText>
         </MjmlColumn>
       </MjmlSection>
