@@ -2,6 +2,7 @@ import {NextApiRequest, NextApiResponse} from "next";
 import { DataImport } from '../../../../operations/DataImport';
 import * as mongodb from 'mongodb';
 import { IdHelper } from '../../../../operations/IdHelper';
+import { FlickrPhotoProps } from "components/Models";
 
 let cachedDb: mongodb.Db = null
 
@@ -27,7 +28,10 @@ async function retrieveItems(request: NextApiRequest, response: NextApiResponse)
     date_fetched: {$gt: startDate, $lt: endDate}
    };
    const sort = {date_taken: 1};
-   const items = await itemsCollection.find(filter).sort(sort).toArray();
+   const items: FlickrPhotoProps[]  = await itemsCollection.find(filter).sort(sort).toArray();
+   if (items.length > 0) {
+    response.setHeader('Cache-Control', 's-maxage=31536000'); // cache 1 week if there is data
+   }
    response.status(200).json({items: items});
 }
 
