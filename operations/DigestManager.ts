@@ -23,9 +23,12 @@ export class DigestManager {
     while (await cursor.hasNext()) {
       const subscription = await cursor.next() as SubscriptionProps;
       const lastDigest = subscription.last_digest;
-      const modifiedLastDigest = lastDigest === undefined ? undefined : new Date(lastDigest.getTime() + 25 * 60 * 1000);
+
+      const modifiedLastDigest = lastDigest === undefined ? 
+          new Date(processDate.getTime() - subscription.frequency * 60 * 60 * 24 * 1000) 
+        : new Date(lastDigest.getTime());
       if (this.readyForDigest(subscription.frequency, processDate, modifiedLastDigest)) {
-        const contentAvailable = await this.hasContent(processDate, modifiedLastDigest);
+        const contentAvailable = await this.hasContent(processDate.getTime(), modifiedLastDigest.getTime());
         if (contentAvailable) {
           const digest: DigestProps = { service_key: subscription.service_key,
                                         email: subscription.email,
@@ -42,7 +45,7 @@ export class DigestManager {
   async completeDigest(digest: DigestProps) {
     const subscriptionsCollection = this.db.collection('subscriptions');
     const result = await subscriptionsCollection.updateOne(
-      {service_key:digest.service_key, email:digest.email},
+      {service_key: digest.service_key, email: digest.email},
       {$set: {last_digest: digest.end_date}});
     return result.modifiedCount == 1;
   }
@@ -64,12 +67,13 @@ export class DigestManager {
       return true;
     }
     const delta = processDate.getTime() - lastDate.getTime();
-    return delta / DigestManager.DAY_IN_MS >= frequency;
+    const days = delta / DigestManager.DAY_IN_MS;
+    return  days >= frequency;
   }
 
   @memorize({ttl: Infinity})
-  async hasContent(processDate: Date, lastDate: Date): Promise<boolean> {
-    const filter =  {service_key: this.stream.service_key,  date_uploaded: {$gt: lastDate, $lt: processDate}};
+  async hasContent(processDate: number, lastDate: number): Promise<boolean> {
+    const filter =  {service_key: this.stream.service_key,  date_fetched: {$gt: new Date(lastDate), $lt: new Date(processDate)}};
     const itemsCollection = this.db.collection("items");
     const count = await itemsCollection.countDocuments(filter);
     return count > 0;

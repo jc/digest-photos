@@ -6,7 +6,7 @@ import { IdHelper } from '../operations/IdHelper';
 import { MailgunDelivery } from '../operations/MailgunDelivery';
 import React from "react";
 import { DigestManager } from '../operations/DigestManager';
-import { DigestProps, SubscriptionProps } from '../components/Models';
+import { DigestProps, SubscriptionProps, StreamProps } from '../components/Models';
 
 export class RenderAction extends CommandLineAction {
   private dryRun: CommandLineFlagParameter;
@@ -56,12 +56,12 @@ export class RenderAction extends CommandLineAction {
         console.log(`[DRY-RUN]: Send ${digest.email} ${result.url} ${digest.end_date}`);
       } else {
         const sendResult = await MailgunDelivery.send(digest.email, output.html);
-        false && await manager.completeDigest(digest);
+        await manager.completeDigest(digest);
         console.log(`Send ${digest.email} ${result.url}`, sendResult);
       }
       return digest;
     } catch (e) {
-      if(e instanceof Error) {
+      if (e instanceof Error) {
         console.error(`Failed to send ${digest.email}:`, e);
       } else {
         console.error(`Failed to send ${digest.email}:`, e);
@@ -70,19 +70,34 @@ export class RenderAction extends CommandLineAction {
     }
   }
 
-  protected async onExecute(): Promise<void> {
-    const mongoClient = DataImport.createMongoClient();
-    await mongoClient.connect();
-    const db = await mongoClient.db("digestif");
-    const stream = await db.collection('streams').findOne({service_key: '35237094740@N01'});
+  async processStream(stream: StreamProps, db) {
     const manager = new  DigestManager(stream, db, true);
-    const digests = (await manager.createDigests(new Date())).filter((digest) => digest.email == 'james@jamesclarke.net');
+    const digests = (await manager.createDigests(new Date()));
     const sentDigests = (await Promise.all(digests.map((digest) => this.performSend(digest, manager, stream, db)))).filter((value) => value != null);
     let insertedCount = sentDigests.length;
+    let logPrefix = '';
     if (!this.dryRun.value) {
       insertedCount = await manager.recordDigests(sentDigests);
+    } else {
+      logPrefix = '[DRY-RUN]:';
     }
-    console.log(`${stream.service_key} generated ${digests.length} digests, sent ${sentDigests.length}, recorded ${insertedCount}`);
-    mongoClient.close();
+    console.log(logPrefix, `${stream.service_key} generated ${digests.length} digests, sent ${sentDigests.length}, recorded ${insertedCount}`);
   }
+
+  protected async onExecute(): Promise<void> {
+    try {
+      const mongoClient = DataImport.createMongoClient();
+      await mongoClient.connect();
+      const db = await mongoClient.db("digestif");
+      const streamsCursor = await db.collection('streams').find({});
+      while (await streamsCursor.hasNext()) {
+        const stream = await streamsCursor.next() as StreamProps;
+        await this.processStream(stream, db);
+      }
+      mongoClient.close();
+    } catch (e) {
+      console.error('Failed:', e);
+    }
+  }
+
 }
