@@ -37,7 +37,7 @@ export class FlickrImage<P extends FlickrPhotoProps> extends Component<P> {
 
     return (
       <img src={this.imgUrlSize("c")}
-        sizes="calc(100vw - 120px)"
+        sizes="90vw"
         srcSet={srcset} />
     );
   }

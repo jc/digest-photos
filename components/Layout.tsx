@@ -17,7 +17,7 @@ export const Layout: React.FunctionComponent<{ title: string }> = ({ children, t
     <style jsx>{`
       #sitewrap {
         background: #fff;
-        width: 800px;
+        width: 90%;
         margin: 0 auto;
         padding: 0 60px;
       }
