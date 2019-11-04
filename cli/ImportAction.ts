@@ -20,8 +20,18 @@ export class ImportAction extends CommandLineAction {
       });
   }  
   
-  protected onExecute(): Promise<void> {
-    console.log("import called with " + this.dryRun.value)
-    return DataImport.importAll(DataImport.createMongoClient(), this.dryRun.value).then(result => console.log(result)).catch((err) => console.log({ error: err }));
+  protected async onExecute() {
+    try {
+      const result = await DataImport.importAll(DataImport.createMongoClient(), this.dryRun.value);
+      let updateMsg = 'Update';
+      if (this.dryRun.value) {
+        updateMsg = '[DRY-RUN] Update'
+      }
+      for (let key in result) {
+        console.log(updateMsg, key, 'has', result[key], 'items.');
+      }
+    } catch (e) {
+      console.log('ERROR', e);
+    }
   }
 }
