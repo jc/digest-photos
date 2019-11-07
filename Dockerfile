@@ -10,7 +10,7 @@ RUN npm ci
 # Copy all files to the working directly, build the application
 # and purge the development dependencies
 COPY . .
-RUN npm run build && npm prune --production
+RUN npm run build-cli && npm prune --production
 
 # Create a new image using a minimal Node.js image
 # with no extra tools packaged in, such as Yarn or npm for the smallest final size
@@ -25,8 +25,3 @@ ENV PATH="./node_modules/.bin:$PATH"
 
 # Copy files from the base image over to our new image's working directory
 COPY --from=build /usr/src .
-
-EXPOSE 3000
-
-# Start the server for Next.js using Node.js
-CMD ["node", ".next/production-server/index.js"]

@@ -3,9 +3,12 @@
 !components
 !server
 !static
+!operations
+!cli
 !.babelrc
 !next.config.js
+!next-env.d.ts
 !package.json
 !package-lock.json
 !tsconfig.json
-!tsconfig.server.json
+!now.json
