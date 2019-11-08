@@ -7,9 +7,12 @@ import { MailgunDelivery } from '../operations/MailgunDelivery';
 import React from "react";
 import { DigestManager } from '../operations/DigestManager';
 import { DigestProps, SubscriptionProps, StreamProps } from '../components/Models';
+import pino from 'pino';
 
 export class RenderAction extends CommandLineAction {
   private dryRun: CommandLineFlagParameter;
+  private logger = pino({name: 'cli-render'});
+
 
   public constructor() {
     super({
@@ -53,18 +56,18 @@ export class RenderAction extends CommandLineAction {
       const email = React.createElement(Email, {items: result.items, url: result.url, stream: stream, subscription: subscription});
       const output = render(email, {validationLevel: 'soft'});
       if (this.dryRun.value) {
-        console.log(`[DRY-RUN]: Send ${digest.email} ${result.url} ${digest.end_date}`);
+        this.logger.info(`[DRY-RUN]: Send ${digest.email} ${result.url} ${digest.end_date}`);
       } else {
         const sendResult = await MailgunDelivery.send(digest.email, output.html);
         await manager.completeDigest(digest);
-        console.log(`Send ${digest.email} ${result.url}`, sendResult);
+        this.logger.info(`Send ${digest.email} ${result.url}`, sendResult);
       }
       return digest;
     } catch (e) {
       if (e instanceof Error) {
-        console.error(`Failed to send ${digest.email}:`, e);
+        this.logger.error(`Failed to send ${digest.email}:`, e);
       } else {
-        console.error(`Failed to send ${digest.email}:`, e);
+        this.logger.error(`Failed to send ${digest.email}:`, e);
       }
       return null;
     }
@@ -81,7 +84,7 @@ export class RenderAction extends CommandLineAction {
     } else {
       logPrefix = '[DRY-RUN]:';
     }
-    console.log(logPrefix, `${stream.service_key} generated ${digests.length} digests, sent ${sentDigests.length}, recorded ${insertedCount}`);
+    this.logger.info(logPrefix, `${stream.service_key} generated ${digests.length} digests, sent ${sentDigests.length}, recorded ${insertedCount}`);
   }
 
   protected async onExecute(): Promise<void> {
@@ -96,7 +99,7 @@ export class RenderAction extends CommandLineAction {
       }
       mongoClient.close();
     } catch (e) {
-      console.error('Failed:', e);
+      this.logger.error('Failed:', e);
     }
   }
 
