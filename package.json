@@ -4,6 +4,7 @@
     "build": "next build",
     "start": "next start",
     "build-cli": "tsc --jsx react -m commonjs",
+    "fix": "tslint -c tslint.json {operations,pages,api,cli,components}/**/*.ts* --fix",
     "cli": "node ./dist/cli/dp.js"
   },
   "dependencies": {
@@ -32,6 +33,10 @@
     "@types/node": "^12.7.2",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
+    "prettier": "1.18.2",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.5.3"
   },
   "browser": {
