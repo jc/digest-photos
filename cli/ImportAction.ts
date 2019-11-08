@@ -1,5 +1,6 @@
 import {CommandLineAction, CommandLineFlagParameter} from '@microsoft/ts-command-line';
 import { DataImport } from '../operations/DataImport';
+import pino from 'pino';
 
 export class ImportAction extends CommandLineAction {
   private dryRun: CommandLineFlagParameter;
@@ -21,6 +22,7 @@ export class ImportAction extends CommandLineAction {
   }  
   
   protected async onExecute() {
+    const logger = pino({name: 'cli-import'});
     try {
       const result = await DataImport.importAll(DataImport.createMongoClient(), this.dryRun.value);
       let updateMsg = 'Update';
@@ -28,10 +30,10 @@ export class ImportAction extends CommandLineAction {
         updateMsg = '[DRY-RUN] Update'
       }
       for (let key in result) {
-        console.log(updateMsg, key, 'has', result[key], 'items.');
+        logger.info(updateMsg, key, 'has', result[key], 'items.');
       }
     } catch (e) {
-      console.log('ERROR', e);
+      logger.error(e);
     }
   }
 }
