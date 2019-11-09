@@ -1,13 +1,13 @@
-const Hashids = require('hashids/cjs');
+import Hashids from "hashids/cjs";
 
-export class IdHelper { 
-  static hashids = new Hashids();
+export class IdHelper {
+  public static hashids = new Hashids();
 
-  static decode(value: string): number[] {
+  public static decode(value: string): Array<number | bigint> {
     return IdHelper.hashids.decode(value);
   }
 
-  static encode(...values: number[]): string {
+  public static encode(...values: Array<number | bigint>): string {
     return IdHelper.hashids.encode(values);
-  }  
+  }
 }

@@ -1,8 +1,10 @@
-import {DigestifCommandLine} from './Digestif';
-import * as colors from 'colors';
+import pino from "pino";
+import { DigestifCommandLine } from "./Digestif";
 
 const cmd = new DigestifCommandLine();
-cmd.execute().catch((error) => {
-  console.error(colors.red(`An unexpected error occurred: ${error}`));
+const logger = pino({ name: "cli-dp" });
+
+cmd.execute().catch(error => {
+  logger.error(`An unexpected error occurred: ${error}`);
   process.exit(1);
 });

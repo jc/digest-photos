@@ -1,37 +1,45 @@
-import {CommandLineAction, CommandLineFlagParameter} from '@microsoft/ts-command-line';
-import { DataImport } from '../operations/DataImport';
+import {
+  CommandLineAction,
+  CommandLineFlagParameter
+} from "@microsoft/ts-command-line";
+import pino from "pino";
+import { DataImport } from "../operations/DataImport";
 
 export class ImportAction extends CommandLineAction {
   private dryRun: CommandLineFlagParameter;
 
   public constructor() {
     super({
-      actionName: 'import',
-      summary: 'Import all data from Flickr',
-      documentation: 'Imports all latest data from Flickr.'
+      actionName: "import",
+      summary: "Import all data from Flickr",
+      documentation: "Imports all latest data from Flickr."
     });
   }
-  
+
   protected onDefineParameters(): void {
-      this.dryRun = this.defineFlagParameter({
-        parameterLongName: '--dry-run',
-        parameterShortName: '-d',
-        description: 'Dry run, do not store any data'
-      });
-  }  
-  
+    this.dryRun = this.defineFlagParameter({
+      parameterLongName: "--dry-run",
+      parameterShortName: "-d",
+      description: "Dry run, do not store any data"
+    });
+  }
+
   protected async onExecute() {
+    const logger = pino({ name: "cli-import" });
     try {
-      const result = await DataImport.importAll(DataImport.createMongoClient(), this.dryRun.value);
-      let updateMsg = 'Update';
+      const result = await DataImport.importAll(
+        DataImport.createMongoClient(),
+        this.dryRun.value
+      );
+      let updateMsg = "Update";
       if (this.dryRun.value) {
-        updateMsg = '[DRY-RUN] Update'
+        updateMsg = "[DRY-RUN] Update";
       }
-      for (let key in result) {
-        console.log(updateMsg, key, 'has', result[key], 'items.');
+      for (const key of Object.keys(result)) {
+        logger.info(updateMsg, key, "has", result[key], "items.");
       }
     } catch (e) {
-      console.log('ERROR', e);
+      logger.error(e);
     }
   }
 }
