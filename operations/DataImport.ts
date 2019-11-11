@@ -66,10 +66,39 @@ export class DataImport {
     this.dryRun = dryRun;
   }
 
+  public async updateStream() {
+    const apiKey = process.env.FLICKR_API_KEY;
+    const apiSecret = process.env.FLICKR_API_SECRET;
+    const flickr = new Flickr(
+      Flickr.OAuth.createPlugin(
+        apiKey,
+        apiSecret,
+        this.stream.oauth_token,
+        this.stream.oauth_token_secret
+      )
+    );
+    const data = (await flickr.people.getInfo({
+      user_id: this.stream.service_key
+    })).body;
+    const name = data.person.realname._content || data.person.username._content;
+    if (name !== this.stream.name) {
+      await this.mongo
+        .db("digestif")
+        .collection("streams")
+        .updateOne(
+          { service_key: this.stream.service_key },
+          { $set: { name } }
+        );
+      return true;
+    }
+    return false;
+  }
+
   public async import(
     since: Date = this.stream.last_checked,
     collection = this.mongo.db("digestif").collection("items")
   ): Promise<number> {
+    await this.updateStream();
     const now = new Date();
     const photos = await this.getFlickrPhotos(since);
     if (this.dryRun) {

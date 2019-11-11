@@ -80,7 +80,9 @@ export class RenderAction extends CommandLineAction {
       } else {
         const sendResult = await MailgunDelivery.send(
           digest.email,
-          output.html
+          output.html,
+          stream.name,
+          result.url
         );
         await manager.completeDigest(digest);
         this.logger.info(`Send ${digest.email} ${result.url}`, sendResult);

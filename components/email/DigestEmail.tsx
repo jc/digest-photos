@@ -21,6 +21,7 @@ import { ViewAllCta } from "./ViewAllCta";
 
 interface SummaryProps {
   name: string;
+  streamUrl: string;
   url: string;
 }
 
@@ -41,10 +42,13 @@ export const Summary: React.FunctionComponent<SummaryProps> = props => (
         font-size="14px"
         align="left"
         line-height="25.2px"
-        padding="10px 10px 20px 10px"
+        padding="0 10px 10px 10px"
       >
         <p>
-          Latest photographs from <a href={props.url}>{props.name}</a>.
+          Here are the latest photographs from{" "}
+          <a href={props.streamUrl}>{props.name}</a>. Having trouble viewing
+          this email?{" "}
+          <a href={props.url}>View all these photographs on the web</a>.
         </p>
       </MjmlText>
     </MjmlColumn>
@@ -91,8 +95,11 @@ export const Unsubscribe: React.FunctionComponent<UnsubscribeProps> = props => (
 export const Layout: React.FunctionComponent<{}> = ({ children }) => (
   <Mjml>
     <MjmlHead>
-      <MjmlStyle>
-        {"p {margin: 0 } a {color: #2BA6CB } a {text - decoration: underline }"}
+      <MjmlStyle inline="inline">
+        {`a {
+            color: #2BA6CB;
+            text-decoration: underline; 
+          }`}
       </MjmlStyle>
       <MjmlAttributes>
         <MjmlAll
@@ -145,7 +152,11 @@ export const Layout: React.FunctionComponent<{}> = ({ children }) => (
             padding="20px 10px 10px 10px"
           >
             <p>
-              Powered by <a href="http://digest.photos">Digestif</a>
+              Powered by <a href="http://digest.photos">Digestif</a>. Digestif
+              converts your photostream into an email digest. Your friends and
+              family subscribe and decide how frequently they want digests
+              delivered. That way, when you post new photographs your friends
+              and family are notified on their terms.
             </p>
           </MjmlText>
         </MjmlColumn>
@@ -168,7 +179,8 @@ export const Email: React.FunctionComponent<DigestEmailProps> = props => (
     {props.stream.name && (
       <Summary
         name={props.stream.name}
-        url={`https://www.flickr.com/photos/{props.stream.service_key}`}
+        streamUrl={`https://www.flickr.com/photos/${props.stream.service_key}`}
+        url={props.url}
       />
     )}
     <MjmlSection text-align="center" background-color="#FFFFFF" padding="0">

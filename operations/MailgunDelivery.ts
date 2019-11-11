@@ -8,12 +8,17 @@ export class MailgunDelivery {
     });
   }
 
-  public static async send(email: string, html: string) {
+  public static async send(
+    email: string,
+    html: string,
+    name: string,
+    url: string
+  ) {
     const data = {
       from: "Digestif <photos@digest.photos>",
       to: [email],
-      subject: "A new photo digest",
-      text: "Sorry we have no text available.",
+      subject: `A new photo digest from ${name}`,
+      text: `Here are the latest photographs from ${name}, delivered in a handy digest. You can view all the photographs at ${url}`,
       html
     };
     const domain = "mg.digest.photos";
