@@ -37,16 +37,23 @@ export class FlickrEmailImage extends FlickrImage<FlickrEmailImageProps> {
             line-height="15.4px"
             padding="10px"
           >
-            <p>
-              {this.props.description.split("\n").map((item, key) => (
-                <span key={key}>
-                  {item}
-                  <br />
-                </span>
-              ))}
-            </p>
+            {this.props.description.split("\n").map((item, key) => (
+              <span key={key}>
+                {item}
+                <br />
+              </span>
+            ))}
           </MjmlText>
         )}
+        <MjmlText
+          font-size="14px"
+          align="center"
+          line-height="15.4px"
+          padding="10px"
+          color="#888"
+        >
+          {String.fromCharCode(9733)}
+        </MjmlText>
       </MjmlColumn>
     );
   }
