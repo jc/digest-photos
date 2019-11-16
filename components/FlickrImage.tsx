@@ -76,11 +76,6 @@ export class FlickrImage<P extends FlickrPhotoProps> extends Component<P> {
             align-items: baseline;
             margin-bottom: 1em;
           }
-        
-          img {
-            flex: none;
-            max-height: 1000px;
-          }
         `}</style>
       </div>
     )
