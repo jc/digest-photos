@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import { Icon } from 'semantic-ui-react';
 import React from "react";
+import he from 'he';
 
 export interface PhotographProps {
   title?: string,
@@ -38,8 +39,8 @@ export interface EntryProps {
 
 export const Entry: FunctionComponent<EntryProps> = (props) => (
   <div className="text">
-    {props.title && <h3>{props.title}</h3>}
-    {props.description && <p>{props.description}</p>}
+    {props.title && <h3>{he.decode(props.title)}</h3>}
+    {props.description && <p>{he.decode(props.description)}</p>}
     <style jsx>{`
         div {
             margin-top: 0.25em;

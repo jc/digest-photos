@@ -1,3 +1,4 @@
+import he from "he";
 import { MjmlColumn, MjmlImage, MjmlText } from "mjml-react";
 import React from "react";
 import { FlickrImage } from "../FlickrImage";
@@ -27,7 +28,7 @@ export class FlickrEmailImage extends FlickrImage<FlickrEmailImageProps> {
             line-height="18.7px"
             padding="10px 10px 0px 10px"
           >
-            <span>{this.props.title}</span>
+            <span>{he.decode(this.props.title)}</span>
           </MjmlText>
         )}
         {this.props.description && (
@@ -39,7 +40,7 @@ export class FlickrEmailImage extends FlickrImage<FlickrEmailImageProps> {
           >
             {this.props.description.split("\n").map((item, key) => (
               <span key={key}>
-                {item}
+                {he.decode(item)}
                 <br />
               </span>
             ))}
