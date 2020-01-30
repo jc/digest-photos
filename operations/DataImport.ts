@@ -37,7 +37,7 @@ export class DataImport {
         results[stream.service_key] = data;
       }
     }
-    mongo.close();
+    await mongo.close();
     return results;
   }
 

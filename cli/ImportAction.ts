@@ -26,11 +26,10 @@ export class ImportAction extends CommandLineAction {
 
   protected async onExecute() {
     const logger = pino({ name: "cli-import" });
+    let mongo = null;
     try {
-      const result = await DataImport.importAll(
-        DataImport.createMongoClient(),
-        this.dryRun.value
-      );
+      mongo = DataImport.createMongoClient();
+      const result = await DataImport.importAll(mongo, this.dryRun.value);
       let updateMsg = "Update";
       if (this.dryRun.value) {
         updateMsg = "[DRY-RUN] Update";
@@ -40,6 +39,9 @@ export class ImportAction extends CommandLineAction {
       }
     } catch (e) {
       logger.error(e);
+      if (mongo != null && mongo.isConnected()) {
+        await mongo.close();
+      }
     }
   }
 }

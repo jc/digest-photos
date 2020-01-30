@@ -126,8 +126,9 @@ export class RenderAction extends CommandLineAction {
   }
 
   protected async onExecute(): Promise<void> {
+    let mongoClient = null;
     try {
-      const mongoClient = DataImport.createMongoClient();
+      mongoClient = DataImport.createMongoClient();
       await mongoClient.connect();
       const db = await mongoClient.db("digestif");
       const streamsCursor = await db.collection("streams").find({});
@@ -135,9 +136,12 @@ export class RenderAction extends CommandLineAction {
         const stream = (await streamsCursor.next()) as StreamProps;
         await this.processStream(stream, db);
       }
-      mongoClient.close();
+      await mongoClient.close();
     } catch (e) {
       this.logger.error("Failed:", e);
+      if (mongoClient != null && mongoClient.isConnected()) {
+        await mongoClient.close();
+      }
     }
   }
 }
