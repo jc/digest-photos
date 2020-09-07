@@ -22,7 +22,7 @@
     "mongodb": "^3.3.2",
     "mongodb-stitch-browser-sdk": "^4.5.0",
     "mongodb-stitch-server-sdk": "^4.5.0",
-    "next": "^9.2.1",
+    "next": "^9.3.2",
     "now": "^16.5.2",
     "pino": "^5.13.5",
     "react": "^16.12.0",
