@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@microsoft/ts-command-line": "^4.3.4",
-    "@zeit/next-css": "^1.0.1",
     "flickr-sdk": "^3.9.0",
     "formik": "^1.5.8",
     "hashids": "^2.0.1",
@@ -22,7 +21,7 @@
     "mongodb": "^3.3.2",
     "mongodb-stitch-browser-sdk": "^4.5.0",
     "mongodb-stitch-server-sdk": "^4.5.0",
-    "next": "^9.2.1",
+    "next": "^10.0.1",
     "now": "^16.5.2",
     "pino": "^5.13.5",
     "react": "^16.12.0",
