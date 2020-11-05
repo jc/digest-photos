@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Layout } from '../components/Layout';
 import React from "react";
 
-export default () => (
+const Index = () => (
   <div>
     <Layout title="Digestif ">
       <div className="text">
@@ -35,3 +35,5 @@ export default () => (
     </Layout>
   </div>
 );
+
+export default Index;
